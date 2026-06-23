@@ -1,0 +1,111 @@
+class IgraKvadrat {
+    field int x, y;              
+    field int hranaX, hranaY;     
+    field int bodovi;
+    field boolean krajIgre;
+    field String tekstBodovi;   
+
+    constructor IgraKvadrat new() {
+        let x = 240;        
+        let y = 120;
+        let hranaX = 60;    // 1. pozic. hrane
+        let hranaY = 60;
+        let bodovi = 0;
+        let krajIgre = false;
+        let tekstBodovi = "Bodovi: "; 
+        return this;
+    }
+
+    method void obrisi() {
+        do tekstBodovi.dispose(); //memorija
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    
+    method void nacrtajIgraca(boolean boja) {
+        do Screen.setColor(boja);
+        do Screen.drawRectangle(x, y, x + 16, y + 16);
+        return;
+    }
+
+    method void nacrtajHranu(boolean boja) {
+        do Screen.setColor(boja);
+        do Screen.drawRectangle(hranaX, hranaY, hranaX + 8, hranaY + 8);
+        return;
+    }
+
+    method void pokreni() {
+        var char tipka;
+        
+    
+        do nacrtajIgraca(true);
+        do nacrtajHranu(true);
+
+        while (~krajIgre) {
+            
+            do Output.moveCursor(0, 0);
+            do Output.printString(tekstBodovi);
+            do Output.printInt(bodovi);
+
+            let tipka = Keyboard.keyPressed();
+
+           
+            if (tipka > 0) {
+                do nacrtajIgraca(false);
+            }
+
+            
+            if (tipka = 131) { // gore
+                let y = y - 4;
+                if (y < 16) { let krajIgre = true; } 
+            }
+            if (tipka = 133) { // Dole
+                let y = y + 4;
+                if (y > 238) { let krajIgre = true; } 
+            }
+            if (tipka = 130) { // Lijevo
+                let x = x - 4;
+                if (x < 4) { let krajIgre = true; } 
+            }
+            if (tipka = 132) { // desno
+                let x = x + 4;
+                if (x > 494) { let krajIgre = true; } 
+            }
+            if (tipka = 140) { let krajIgre = true; } //esc
+
+            
+            if (tipka > 0) {
+                do nacrtajIgraca(true);
+            }
+
+            //sudar
+            if ((Math.abs(x - hranaX) < 16) & (Math.abs(y - hranaY) < 16)) {
+                let bodovi = bodovi + 1;
+                do nacrtajHranu(false); 
+                let hranaX = hranaX + 113;
+                let hranaY = hranaY + 71;
+                
+                
+                if (hranaX > 480) { let hranaX = hranaX - 440; }
+                if (hranaY > 230) { let hranaY = hranaY - 200; }
+                if (hranaY < 20)  { let hranaY = 30; }
+                
+                do nacrtajHranu(true); 
+            }
+
+            do Sys.wait(10); //STanka
+        }
+
+        // Kraj igre
+        do Screen.clearScreen();
+        do Output.moveCursor(10, 22);
+        do Output.printString("IGRA GOTOVA!");
+        do Output.moveCursor(12, 21);
+        do Output.printString("Sakupili ste ");
+        do Output.printInt(bodovi);
+        do Output.printString(" bodova.");
+        
+        return;
+    }
+}

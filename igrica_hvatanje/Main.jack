@@ -1,0 +1,11 @@
+
+
+class Main {
+    function void main() {
+        var IgraKvadrat igra;
+        let igra = IgraKvadrat.new();
+        do igra.pokreni();
+        do igra.obrisi();
+        return;
+    }
+}
